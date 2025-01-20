@@ -1,42 +1,85 @@
 using System;
 
-public class Program
+class Program
 {
-    public static void Main(string[] args)
+    private static Journal _journal = new Journal();
+    private static string[] _prompts = new string[]
     {
-        Journal journal = new Journal();
-        
+        "Who was the most interesting person I interacted with today?",
+        "What was the best part of my day?",
+        "How did I see the hand of the Lord in my life today?",
+        "What was the strongest emotion I felt today?",
+        "If I had one thing I could do over today, what would it be?"
+    };
+
+    static void Main(string[] args)
+    {
+        ShowMenu();
+    }
+
+    private static void ShowMenu()
+    {
         while (true)
         {
-            Console.WriteLine("1. Add Entry");
-            Console.WriteLine("2. Display Entries");
-            Console.WriteLine("3. Exit");
-            Console.Write("Choose an option: ");
+            Console.WriteLine("\nJournal Program");
+            Console.WriteLine("1. Write a new entry");
+            Console.WriteLine("2. Display journal");
+            Console.WriteLine("3. Save journal to a file");
+            Console.WriteLine("4. Load journal from a file");
+            Console.WriteLine("5. Quit");
+            Console.Write("Select an option: ");
+
             string choice = Console.ReadLine();
 
-            if (choice == "1")
+            switch (choice)
             {
-                Console.Write("Enter the date (yyyy-mm-dd): ");
-                DateTime date = DateTime.Parse(Console.ReadLine());
-
-                Console.Write("Enter your entry: ");
-                string text = Console.ReadLine();
-
-                Entry entry = new Entry(date, text);
-                journal.AddEntry(entry);
-            }
-            else if (choice == "2")
-            {
-                journal.DisplayEntries();
-            }
-            else if (choice == "3")
-            {
-                break;
-            }
-            else
-            {
-                Console.WriteLine("Invalid option. Try again.");
+                case "1":
+                    WriteEntry();
+                    break;
+                case "2":
+                    _journal.DisplayEntries();
+                    break;
+                case "3":
+                    SaveJournal();
+                    break;
+                case "4":
+                    LoadJournal();
+                    break;
+                case "5":
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Please try again.");
+                    break;
             }
         }
+    }
+
+    private static void WriteEntry()
+    {
+        Random random = new Random();
+        string prompt = _prompts[random.Next(_prompts.Length)];
+        Console.WriteLine($"Prompt: {prompt}");
+        Console.Write("Your response: ");
+        string response = Console.ReadLine();
+        string date = DateTime.Now.ToString("yyyy-MM-dd");
+
+        _journal.AddEntry(prompt, response, date);
+        Console.WriteLine("Entry added successfully.");
+    }
+
+    private static void SaveJournal()
+    {
+        Console.Write("Enter filename to save: ");
+        string filename = Console.ReadLine();
+        _journal.SaveToFile(filename);
+        Console.WriteLine("Journal saved successfully.");
+    }
+
+    private static void LoadJournal()
+    {
+        Console.Write("Enter filename to load: ");
+        string filename = Console.ReadLine();
+        _journal.LoadFromFile(filename);
+        Console.WriteLine("Journal loaded successfully.");
     }
 }
