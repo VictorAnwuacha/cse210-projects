@@ -61,9 +61,15 @@ class Program
         Console.WriteLine($"Prompt: {prompt}");
         Console.Write("Your response: ");
         string response = Console.ReadLine();
-        string date = DateTime.Now.ToString("yyyy-MM-dd");
 
-        _journal.AddEntry(prompt, response, date);
+        // Ask for mood
+        Console.Write("How would you describe your mood today? ");
+        string mood = Console.ReadLine();
+
+        string date = DateTime.Now.ToString("yyyy-MM-dd");
+        string time = DateTime.Now.ToString("HH:mm:ss");
+
+        _journal.AddEntry(prompt, response, date, time, mood);
         Console.WriteLine("Entry added successfully.");
     }
 

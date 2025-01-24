@@ -6,9 +6,9 @@ public class Journal
 {
     private List<Entry> _entries = new List<Entry>();
 
-    public void AddEntry(string prompt, string response, string date)
+    public void AddEntry(string prompt, string response, string date, string time, string mood)
     {
-        _entries.Add(new Entry(prompt, response, date));
+        _entries.Add(new Entry(prompt, response, date, time, mood));
     }
 
     public void DisplayEntries()
@@ -25,9 +25,19 @@ public class Journal
         {
             foreach (var entry in _entries)
             {
-                writer.WriteLine($"{entry.Date}|{entry.Prompt}|{entry.Response}");
+                // Save to CSV format
+                writer.WriteLine($"{EscapeCsvValue(entry.Date)}|{EscapeCsvValue(entry.Prompt)}|{EscapeCsvValue(entry.Response)}|{EscapeCsvValue(entry.Time)}|{EscapeCsvValue(entry.Mood)}");
             }
         }
+    }
+
+    private string EscapeCsvValue(string value)
+    {
+        if (value.Contains(",") || value.Contains("\""))
+        {
+            value = "\"" + value.Replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 
     public void LoadFromFile(string filename)
@@ -39,9 +49,9 @@ public class Journal
             foreach (var line in lines)
             {
                 string[] parts = line.Split('|');
-                if (parts.Length == 3)
+                if (parts.Length == 5)
                 {
-                    AddEntry(parts[1], parts[2], parts[0]);
+                    AddEntry(parts[1], parts[2], parts[0], parts[3], parts[4]);
                 }
             }
         }
